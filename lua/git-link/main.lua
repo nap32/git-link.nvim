@@ -62,7 +62,7 @@ local function get_current_commit()
 	end
 
 	local commit = vim.fn.trim(output)
-	local _, commit_value = commit:match("^(%x+)$")
+	local commit_value = commit:match("^[%x]+$")
 	return commit_value or "regexerror" -- or "main" is an error-case here...
 end
 
