@@ -58,12 +58,12 @@ local function get_current_commit()
 	local output = vim.fn.system(command)
 	if vim.v.shell_error ~= 0 then
 		vim.notify("Could not determine current branch", vim.log.levels.WARN)
-		return "main"
+		return "commanderror" -- this is an error-case.
 	end
 
 	local commit = vim.fn.trim(output)
 	local _, commit_value = commit:match("^[%x]+$")
-	return commit_value or "main"
+	return commit_value or "regexerror" -- or "main" is an error-case here...
 end
 
 
