@@ -62,7 +62,7 @@ local function get_current_commit()
 	end
 
 	local commit = vim.fn.trim(output)
-	local _, commit_value = branch:match("^[%x]+$")
+	local _, commit_value = commit:match("^[%x]+$")
 	return commit_value or "main"
 end
 
