@@ -45,6 +45,28 @@ local function get_current_branch()
 	return branch_name or "master"
 end
 
+local function get_current_commit()
+	local os_name = jit and jit.os or ""
+	local command
+
+	if os_name == "Windows" then
+		command = "git rev-parse @{u} 2>NUL"
+	else
+		command = "git rev-parse @{u} 2>/dev/null"
+	end
+
+	local output = vim.fn.system(command)
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Could not determine current branch", vim.log.levels.WARN)
+		return "main"
+	end
+
+	local commit = vim.fn.trim(output)
+	local _, commit_value = branch:match("^[%x]+$")
+	return commit_value or "main"
+end
+
+
 local function get_remote_url()
 	local remote_url = vim.fn.trim(vim.fn.system("git config --get remote.origin.url"))
 	if vim.v.shell_error ~= 0 then
@@ -102,10 +124,12 @@ local function get_url()
 	end
 
 	local branch = get_current_branch()
+    local commit = get_current_commit()
 	local start_line, end_line = get_line_range()
 
 	local params = {
 		branch = branch,
+        commit = commit,
 		file_path = relative_filename,
 		start_line = start_line,
 		end_line = end_line,
